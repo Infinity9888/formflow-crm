@@ -14,6 +14,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).send("DB NOT INITIALIZED");
     }
 
+    return res.status(200).send("EARLY OK 5");
+
     const { message } = req.body || {};
 
     // Check if the message contains text or voice
@@ -59,6 +61,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // If it's not a /start command, we forward the message to the Make.com Master Webhook.
     const chatId = message?.chat?.id;
     if (chatId) {
+      return res.status(200).send("EARLY OK 3");
+
       // Find the tenant associated with this chatId
       const clientsRef = db.collection('clients');
       const snapshot = await clientsRef.where('telegramChatId', '==', chatId.toString()).get();
