@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const FIREBASE_PROJECT_ID = 'tapsfun-site';
+const FIREBASE_PROJECT_ID = 'universal-leads-test';
 
 export async function getFirestoreToken() {
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
