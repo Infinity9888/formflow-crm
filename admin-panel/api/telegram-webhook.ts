@@ -21,7 +21,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).send('OK'); // Return 200 so Telegram doesn't retry
     }
 
-    const text = message.text ? message.text.trim() : '';
+    const text = message.text ? String(message.text).trim() : '';
+
+    return res.status(200).send("EARLY OK 2");
 
     // Look for the /start command with the payload (secretKey)
     if (text?.startsWith('/start ')) {
