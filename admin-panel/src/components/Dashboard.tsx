@@ -944,12 +944,12 @@ export default function Dashboard() {
             )}
             {userProfile && userProfile.role === 'client' && (
               <Dialog>
-                <DialogTrigger asChild>
+                <DialogTrigger render={
                   <Button variant="outline" className="shrink-0 rounded-xl bg-[#2AABEE]/10 text-[#2AABEE] hover:bg-[#2AABEE]/20 hover:text-[#2AABEE] border-[#2AABEE]/20">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.686c.223-.204-.054-.31-.346-.116l-6.405 4.032-2.756-.86c-.6-.188-.614-.6.126-.89l10.742-4.14c.498-.184.933.11.72.11z"/></svg>
                     Telegram
                   </Button>
-                </DialogTrigger>
+                } />
                 <DialogContent className="rounded-2xl max-w-md">
                   <DialogHeader>
                     <DialogTitle>Налаштування Telegram</DialogTitle>
