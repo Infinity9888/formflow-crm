@@ -60,7 +60,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const clientDoc = snapshot.docs[0];
         const tenantId = clientDoc.id; // This is the clientId
 
-        const makeMasterWebhook = process.env.MAKE_MASTER_WEBHOOK;
+        const makeMasterWebhook = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
         if (makeMasterWebhook) {
           // Forward the message to Make.com in the background (no await blocking to avoid TG timeouts if Make is slow)
           fetch(makeMasterWebhook, {
