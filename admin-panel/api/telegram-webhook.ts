@@ -1,18 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { db } from './_firebase';
+// import { db } from './_firebase';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
   try {
+    /*
     if (!db) {
       console.error("FIREBASE NOT INITIALIZED. CHECK ENV VARS.");
       return res.status(500).send("DB NOT INITIALIZED");
     }
+    */
 
     const { message } = req.body;
 
@@ -33,6 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Find the client with this secret key
+      /*
       const clientsRef = db.collection('clients');
       const snapshot = await clientsRef.where('secretKey', '==', secretKey).get();
 
@@ -48,6 +47,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await clientDoc.ref.update({
         telegramChatId: chatId.toString()
       });
+      */
 
       await sendTelegramMessage(chatId, "✅ Бот успешно привязан! Теперь вы будете получать уведомления о новых заявках сюда.");
       return res.status(200).send('OK');
@@ -58,12 +58,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const chatId = message?.chat?.id;
     if (chatId) {
       // Find the tenant associated with this chatId
+      /*
       const clientsRef = db.collection('clients');
       const snapshot = await clientsRef.where('telegramChatId', '==', chatId.toString()).get();
       
       if (!snapshot.empty) {
         const clientDoc = snapshot.docs[0];
         const tenantId = clientDoc.id; // This is the clientId
+      */
+        const tenantId = "TEST_TENANT";
 
         const makeMasterWebhook = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
         if (makeMasterWebhook) {
@@ -81,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             console.error("Make Webhook Error:", err);
           }
         }
-      }
+      // }
     }
 
     return res.status(200).send('OK');
