@@ -62,17 +62,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const makeMasterWebhook = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
         if (makeMasterWebhook) {
-          // Forward the message to Make.com in the background (no await blocking to avoid TG timeouts if Make is slow)
-          fetch(makeMasterWebhook, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tenantId,
-              message
-            })
-          }).catch(err => console.error("Make Webhook Error:", err));
-        } else {
-          console.log("No MAKE_MASTER_WEBHOOK found in environment");
+          // AWAIT the fetch! Vercel kills background tasks the moment res.send() is called!
+          try {
+            await fetch(makeMasterWebhook, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                tenantId,
+                message
+              })
+            });
+          } catch (err) {
+            console.error("Make Webhook Error:", err);
+          }
         }
       }
     }
