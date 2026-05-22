@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getFirestoreToken, runQuery, patchDocument } from './_firebase';
+import { getFirestoreToken, runQuery, patchDocument } from './_firebase.js';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const MAKE_WEBHOOK = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
