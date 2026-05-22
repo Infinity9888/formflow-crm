@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестовый Лендинг (Универсальная форма)</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.875rem; }
+        input, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.75rem; background: #000; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:disabled { background: #666; cursor: not-allowed; }
+    </style>
+</head>
+<body data-client-id="test_client_001">
+
+    <div class="card">
+        <h2 style="margin-top:0;">Оставить заявку (Тест)</h2>
+        <p style="font-size: 0.875rem; color: #666; margin-bottom: 1.5rem;">Эта форма динамическая. Поля ниже улетят напрямую в Firebase и появятся в Админке.</p>
+        
+        <form id="lead-form">
+            <div class="form-group">
+                <label>Ваше Имя</label>
+                <input type="text" name="Имя клиента" required placeholder="Например, Иван">
+            </div>
+            
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="tel" name="Телефон" required placeholder="+380...">
+            </div>
+
+            <div class="form-group">
+                <label>Что вас интересует?</label>
+                <select name="Услуга">
+                    <option value="Свадьба под ключ">Свадьба под ключ</option>
+                    <option value="Ремонт авто">Ремонт авто</option>
+                    <option value="Создание сайта">Создание сайта</option>
+                    <option value="Колбаса по акции">Колбаса по акции</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Комментарий (кастомное поле)</label>
+                <input type="text" name="Секретное сообщение" placeholder="Любой текст">
+            </div>
+
+            <button type="submit" id="submit-btn">Отправить</button>
+        </form>
+    </div>
+
+    <!-- Подключаем наш универсальный скрипт (используем type="module" т.к. там import) -->
+    <script type="module" src="./submit-firebase.js"></script>
+
+</body>
+</html>

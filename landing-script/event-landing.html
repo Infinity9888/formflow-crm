@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Элеганс - Организация незабываемых событий</title>
+    <!-- Подключаем Tailwind через CDN для быстрой и красивой верстки без сборки -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        dark: '#1A1A1A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* Кастомный градиент для кнопки */
+        .btn-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #AA8C2C 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(212, 175, 55, 0.5);
+        }
+        .btn-gradient:disabled {
+            background: #ccc;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased" data-client-id="elegance_agency_01">
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069&auto=format&fit=crop" alt="Event" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-dark/70"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <span class="text-gold tracking-[0.2em] uppercase text-sm font-semibold mb-4 block">Event Agency</span>
+            <h1 class="font-serif text-5xl md:text-7xl text-white mb-6 leading-tight">Создаем моменты,<br>которые живут вечно</h1>
+            <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
+                От камерных свадеб до масштабных корпоративов. Мы берем на себя все заботы, чтобы вы могли просто наслаждаться праздником.
+            </p>
+            <a href="#contact" class="btn-gradient text-white px-8 py-4 rounded-full font-medium tracking-wide inline-block">
+                Обсудить ваше событие
+            </a>
+        </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl text-dark mb-4">Наши услуги</h2>
+                <div class="w-24 h-1 bg-gold mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-dark">Свадьбы</h3>
+                    <p class="text-gray-600 font-light">Безупречная организация самого важного дня вашей жизни. От концепции до реализации.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-dark">Корпоративы</h3>
+                    <p class="text-gray-600 font-light">Тимбилдинги, гала-ужины и презентации, которые укрепляют дух вашей команды.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-dark">Частные вечеринки</h3>
+                    <p class="text-gray-600 font-light">Дни рождения, юбилеи и особенные даты в уникальных форматах и локациях.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Form Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-12 bg-white rounded-2xl shadow-xl overflow-hidden">
+            
+            <!-- Info side -->
+            <div class="md:w-5/12 bg-dark p-10 text-white flex flex-col justify-center relative overflow-hidden">
+                <!-- Decorative element -->
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-gold rounded-full opacity-20 blur-2xl"></div>
+                <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-gold rounded-full opacity-20 blur-2xl"></div>
+                
+                <h3 class="font-serif text-3xl mb-6 relative z-10">Давайте создадим сказку вместе</h3>
+                <p class="text-gray-300 font-light mb-8 relative z-10">
+                    Оставьте заявку, и наш креативный директор свяжется с вами в течение 30 минут для бесплатной консультации.
+                </p>
+                
+                <div class="space-y-4 relative z-10 text-sm text-gray-300">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        +380 (99) 123-45-67
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        hello@elegance.com
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form side -->
+            <div class="md:w-7/12 p-10">
+                <form id="lead-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Как к вам обращаться?</label>
+                            <input type="text" name="Имя клиента" required 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all"
+                                placeholder="Иван Иванов">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Номер телефона</label>
+                            <input type="tel" name="Телефон" required 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all"
+                                placeholder="+380...">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Какое событие планируем?</label>
+                        <select name="Тип мероприятия" required 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all bg-white">
+                            <option value="" disabled selected>Выберите тип мероприятия</option>
+                            <option value="Свадьба">Свадьба</option>
+                            <option value="Корпоратив">Корпоратив</option>
+                            <option value="День рождения">День рождения</option>
+                            <option value="Детский праздник">Детский праздник</option>
+                            <option value="Другое">Другое (напишу в комментарии)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Примерное кол-во гостей</label>
+                            <input type="number" name="Количество гостей" 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all"
+                                placeholder="Например, 50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Бюджет (опционально)</label>
+                            <select name="Ориентировочный бюджет" 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all bg-white">
+                                <option value="Не определен">Не определен</option>
+                                <option value="До $5,000">До $5,000</option>
+                                <option value="$5,000 - $15,000">$5,000 - $15,000</option>
+                                <option value="От $15,000">От $15,000</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Пожелания или идеи</label>
+                        <textarea name="Комментарий" rows="3" 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all resize-none"
+                            placeholder="Расскажите вкратце о вашей мечте..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full btn-gradient text-white px-6 py-4 rounded-lg font-medium tracking-wide">
+                        Получить концепцию бесплатно
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-gray-400 py-8 text-center text-sm">
+        <p>&copy; 2026 Elegance Event Agency. Создано с любовью.</p>
+    </footer>
+
+    <!-- Подключаем универсальный скрипт отправки в Firebase -->
+    <script type="module" src="./submit-firebase.js"></script>
+</body>
+</html>
