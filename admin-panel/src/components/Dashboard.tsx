@@ -33,6 +33,9 @@ import {
 } from "@/components/ui/tabs"
 import { ThemeToggle } from "./ThemeToggle"
 import { LeadDetailSheet } from "./LeadDetailSheet"
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts'
+
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 interface Lead {
   id: string
@@ -399,6 +402,21 @@ export default function Dashboard() {
       return true
     })
   }, [clientLeads, statusFilter, searchQuery])
+
+  // Analytics Data
+  const analyticsData = useMemo(() => {
+    const sourceCount: Record<string, number> = {};
+    filteredLeads.forEach(lead => {
+      // Check in formData or root
+      const source = lead.formData?.utm_source || (lead as any).utm_source || lead.source || 'Unknown';
+      const normalized = source.toString().trim();
+      sourceCount[normalized] = (sourceCount[normalized] || 0) + 1;
+    });
+    
+    return Object.entries(sourceCount)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+  }, [filteredLeads]);
 
   // Debug logging
   console.log("DEBUG CRM STATUS:", {
@@ -1016,9 +1034,10 @@ export default function Dashboard() {
           </div>
 
           {/* View Toggler (List vs Kanban Board) */}
-          <TabsList className="grid w-full md:w-[280px] grid-cols-2 rounded-xl p-1 bg-muted/60 shrink-0">
+          <TabsList className="grid w-full md:w-[380px] grid-cols-3 rounded-xl p-1 bg-muted/60 shrink-0">
             <TabsTrigger value="list" className="rounded-lg">{t('dashboard.view_list')}</TabsTrigger>
             <TabsTrigger value="kanban" className="rounded-lg">{t('dashboard.view_kanban')}</TabsTrigger>
+            <TabsTrigger value="analytics" className="rounded-lg">Аналітика</TabsTrigger>
           </TabsList>
         </div>
 
@@ -1294,6 +1313,49 @@ export default function Dashboard() {
               )
             })}
           </div>
+        </TabsContent>
+
+        {/* Tab 3: Analytics View */}
+        <TabsContent value="analytics" className="focus-visible:outline-none">
+          <Card className="shadow-sm rounded-2xl border">
+            <CardHeader className="pb-3 bg-card/30">
+              <CardTitle className="text-xl font-bold">Аналітика (Lead Sources)</CardTitle>
+              <CardDescription>Джерела трафіку на основі utm_source</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {analyticsData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[400px] text-muted-foreground">
+                  <p>Немає даних для аналітики</p>
+                </div>
+              ) : (
+                <div className="h-[400px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={analyticsData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={80}
+                        outerRadius={140}
+                        paddingAngle={5}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {analyticsData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip 
+                        formatter={(value: number) => [value, 'Лідів']}
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      />
+                      <Legend verticalAlign="bottom" height={36} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 

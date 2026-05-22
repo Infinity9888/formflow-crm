@@ -12,13 +12,17 @@ Transitioning from local development to deployment preparation and finalizing ba
 - [x] Added multilingual support (UA, RU, EN) to the CRM.
 - [x] Created test and premium landing page templates.
 - [x] Established cold outreach strategy (manual Instagram prospecting) and compiled initial leads list.
+- [x] Implemented the Vercel Serverless Functions in the `api/` directory for Telegram notifications.
+- [x] Deployed the React CRM and Serverless Functions to Vercel at `formflow-crm.vercel.app`.
+- [x] Registered Telegram webhook successfully pointing to Vercel serverless function.
 
 ## Recent Decisions & Updates (May 2026)
+- **Deployment Success:** Successfully deployed FormFlow CRM to Vercel at `formflow-crm.vercel.app`.
+- **Base UI DialogTrigger Fix:** Resolved a syntax error by replacing `asChild` with `render` in Base UI's `DialogTrigger`.
+- **Vercel Security Bypass:** Successfully bypassed a Vercel email security block during deployment.
 - **Project Naming:** Officially named the productized service **FormFlow**.
 - **Backend Architecture Pivot:** Switched from Firebase Cloud Functions to **Vercel Serverless Functions** (`api/` directory) for Telegram webhooks and notifications due to Firebase Spark plan limitations. 
 
 ## Next Steps
-- [ ] Implement the Vercel Serverless Functions in the `api/` directory for Telegram notifications.
 - [ ] Develop landing page template for the Cleaning/Dry Cleaning niche.
-- [ ] Deploy the React CRM and Serverless Functions to Vercel.
 - [ ] Send out demo versions to collected leads.

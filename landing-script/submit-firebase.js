@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // TODO: Replace with your actual Vercel deployment URL once deployed
-const NOTIFICATION_API_URL = "https://YOUR_VERCEL_APP.vercel.app/api/send-notification";
+const NOTIFICATION_API_URL = "https://formflow-crm.vercel.app/api/send-notification";
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,12 +40,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const utm_source = urlParams.get('utm_source') || 'organic';
+      const utm_medium = urlParams.get('utm_medium') || null;
+      const utm_campaign = urlParams.get('utm_campaign') || null;
+      const utm_term = urlParams.get('utm_term') || null;
+      const utm_content = urlParams.get('utm_content') || null;
+
       // We extract a few generic fields if available, otherwise just dump everything into `formData`
       const payload = {
         clientId: document.body.dataset.clientId || "unknown_client", // Set <body data-client-id="...">
         status: "new",
         createdAt: serverTimestamp(),
         source: document.body.dataset.leadSource || window.location.pathname.split('/').pop() || window.location.hostname || "direct",
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_term,
+        utm_content,
         formData: data
       };
 
