@@ -1,4 +1,6 @@
-import * as admin from 'firebase-admin';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const admin = require('firebase-admin');
 
 // Check if app is already initialized to prevent errors in serverless environments
 if (!admin.apps.length) {
@@ -19,4 +21,4 @@ if (!admin.apps.length) {
   }
 }
 
-export const db = admin.apps.length ? admin.firestore() : null as unknown as admin.firestore.Firestore;
+export const db = admin.apps.length ? admin.firestore() : null;
