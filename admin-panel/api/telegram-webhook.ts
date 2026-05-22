@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { db } from './_firebase';
+import { getFirestoreToken, runQuery, patchDocument } from './_firebase';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const MAKE_WEBHOOK = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -9,26 +10,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    if (!db) {
-      console.error("FIREBASE NOT INITIALIZED. CHECK ENV VARS.");
-      return res.status(500).send("DB NOT INITIALIZED");
-    }
-
-    return res.status(200).send("EARLY OK 5");
-
     const { message } = req.body || {};
 
-    // Check if the message contains text or voice
+    // Ignore non-text, non-voice messages
     if (!message || (!message.text && !message.voice)) {
-      return res.status(200).send('OK'); // Return 200 so Telegram doesn't retry
+      return res.status(200).send('OK');
     }
 
     const text = message.text ? String(message.text).trim() : '';
 
-    return res.status(200).send("EARLY OK 2");
-
-    // Look for the /start command with the payload (secretKey)
-    if (text?.startsWith('/start ')) {
+    // --- /start COMMAND: Link bot to tenant ---
+    if (text.startsWith('/start ')) {
       const secretKey = text.replace('/start ', '').trim();
       const chatId = message.chat.id;
 
@@ -36,21 +28,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).send('OK');
       }
 
-      // Find the client with this secret key
-      const clientsRef = db.collection('clients');
-      const snapshot = await clientsRef.where('secretKey', '==', secretKey).get();
+      const token = await getFirestoreToken();
+      if (!token) {
+        console.error("Failed to get Firestore token");
+        await sendTelegramMessage(chatId, "⚠️ Ошибка сервера. Попробуйте позже.");
+        return res.status(200).send('OK');
+      }
 
-      if (snapshot.empty) {
+      // Query Firestore for client with this secretKey
+      const results = await runQuery(token, {
+        structuredQuery: {
+          from: [{ collectionId: 'clients' }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'secretKey' },
+              op: 'EQUAL',
+              value: { stringValue: secretKey }
+            }
+          },
+          limit: 1
+        }
+      });
+
+      // Check if we found a matching client
+      const doc = results?.[0]?.document;
+      if (!doc) {
         await sendTelegramMessage(chatId, "❌ Неверный ключ. Бот не привязан ни к одному сайту.");
         return res.status(200).send('OK');
       }
 
-      // There should be exactly one matching client
-      const clientDoc = snapshot.docs[0];
-      
-      // Update the client document with the telegramChatId
-      await clientDoc.ref.update({
-        telegramChatId: chatId.toString()
+      // Update the client document with telegramChatId
+      await patchDocument(token, doc.name, {
+        telegramChatId: { stringValue: chatId.toString() }
       });
 
       await sendTelegramMessage(chatId, "✅ Бот успешно привязан! Теперь вы будете получать уведомления о новых заявках сюда.");
@@ -58,29 +67,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // --- JARVIS AI ROUTING ---
-    // If it's not a /start command, we forward the message to the Make.com Master Webhook.
+    // Forward non-/start messages to Make.com
     const chatId = message?.chat?.id;
-    if (chatId) {
-      return res.status(200).send("EARLY OK 3");
+    if (chatId && MAKE_WEBHOOK) {
+      const token = await getFirestoreToken();
+      if (token) {
+        // Find tenant by chatId
+        const results = await runQuery(token, {
+          structuredQuery: {
+            from: [{ collectionId: 'clients' }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: 'telegramChatId' },
+                op: 'EQUAL',
+                value: { stringValue: chatId.toString() }
+              }
+            },
+            limit: 1
+          }
+        });
 
-      // Find the tenant associated with this chatId
-      const clientsRef = db.collection('clients');
-      const snapshot = await clientsRef.where('telegramChatId', '==', chatId.toString()).get();
-      
-      if (!snapshot.empty) {
-        const clientDoc = snapshot.docs[0];
-        const tenantId = clientDoc.id; // This is the clientId
+        const doc = results?.[0]?.document;
+        if (doc) {
+          // Extract clientId from doc path (last segment)
+          const pathParts = doc.name.split('/');
+          const tenantId = pathParts[pathParts.length - 1];
 
-        const makeMasterWebhook = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
-        if (makeMasterWebhook) {
           try {
-            await fetch(makeMasterWebhook, {
+            await fetch(MAKE_WEBHOOK, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                tenantId,
-                message
-              })
+              body: JSON.stringify({ tenantId, message })
             });
           } catch (err) {
             console.error("Make Webhook Error:", err);
@@ -92,7 +109,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).send('OK');
   } catch (error: any) {
     console.error('Telegram Webhook Error:', error?.stack || error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(200).send('OK'); // Always 200 so Telegram doesn't retry
   }
 }
 
@@ -102,13 +119,8 @@ async function sendTelegramMessage(chatId: number, text: string) {
   try {
     await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: text,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text })
     });
   } catch (error) {
     console.error('Failed to send Telegram message:', error);
