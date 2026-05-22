@@ -9,6 +9,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    if (!db) {
+      console.error("FIREBASE NOT INITIALIZED. CHECK ENV VARS.");
+      return res.status(500).send("DB NOT INITIALIZED");
+    }
+
     const { message } = req.body;
 
     // Check if the message contains text or voice

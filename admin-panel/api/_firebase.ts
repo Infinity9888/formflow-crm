@@ -19,4 +19,4 @@ if (!admin.apps.length) {
   }
 }
 
-export const db = admin.firestore();
+export const db = admin.apps.length ? admin.firestore() : null as unknown as admin.firestore.Firestore;
