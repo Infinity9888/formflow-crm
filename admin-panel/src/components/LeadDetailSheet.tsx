@@ -230,7 +230,7 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                       )}
                     >
                       <Phone className="mr-1.5 h-4 w-4 text-blue-500" />
-                      {t("status.in_progress")}
+                      {contacts.phone}
                     </a>
                   </>
                 )}
@@ -283,7 +283,7 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {t("table.change_status")}
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2">
               {Object.entries(statusConfig).map(([key, config]) => {
                 const Icon = config.icon
                 const isActive = key === lead.status
@@ -291,14 +291,15 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                   <Button
                     key={key}
                     variant={isActive ? "default" : "outline"}
-                    className={`rounded-xl justify-start h-10 px-3 text-sm transition-all duration-200 ${
+                    size="sm"
+                    className={`rounded-full h-8 px-3 text-xs transition-all duration-200 ${
                       isActive 
-                        ? `${config.activeBg} font-medium shadow-xs border-0` 
+                        ? `${config.activeBg} font-medium shadow-none border-0` 
                         : `text-muted-foreground hover:bg-muted/80`
                     }`}
                     onClick={() => handleStatusChange(key as Lead["status"])}
                   >
-                    <Icon className={`mr-2 h-4 w-4 ${isActive ? "text-white" : config.color}`} />
+                    <Icon className={`mr-1.5 h-3.5 w-3.5 ${isActive ? "text-white" : config.color}`} />
                     {config.label}
                   </Button>
                 )
@@ -311,43 +312,30 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {t("detail.form_data")}
             </p>
-            <div className="grid gap-2.5">
-              {Object.entries(lead.formData).map(([key, value]) => {
-                const k = key.toLowerCase()
-                let FieldIcon = User
-                if (k.includes("phone") || k.includes("тел")) FieldIcon = Phone
-                else if (k.includes("email") || k.includes("почт")) FieldIcon = Mail
-                else if (k.includes("telegram") || k.includes("tg")) FieldIcon = Send
-
-                return (
-                  <div
-                    key={key}
-                    className="group relative flex items-center justify-between rounded-xl border bg-card/40 p-3.5 transition-all hover:bg-muted/30 hover:border-border/80"
-                  >
-                    <div className="flex items-start gap-3 min-w-0 flex-1">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground mt-0.5">
-                        <FieldIcon className="h-4 w-4" />
-                      </div>
-                      <div className="space-y-0.5 min-w-0 flex-1">
-                        <p className="text-xs font-medium text-muted-foreground/80">{key}</p>
-                        <p className="text-sm font-semibold break-words pr-8 text-foreground">{value}</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                      onClick={() => copyToClipboard(String(value), key)}
-                    >
-                      {copiedField === key ? (
-                        <Check className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <Copy className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
+            <div className="rounded-xl border bg-card/20 overflow-hidden divide-y divide-border/50">
+              {Object.entries(lead.formData).map(([key, value]) => (
+                <div
+                  key={key}
+                  className="group relative flex items-start justify-between p-3 transition-colors hover:bg-muted/30"
+                >
+                  <div className="space-y-0.5 min-w-0 flex-1 pr-8">
+                    <p className="text-xs font-medium text-muted-foreground">{key}</p>
+                    <p className="text-sm font-semibold break-words text-foreground">{value}</p>
                   </div>
-                )
-              })}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
+                    onClick={() => copyToClipboard(String(value), key)}
+                  >
+                    {copiedField === key ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
 
