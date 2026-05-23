@@ -847,7 +847,7 @@ export default function Dashboard() {
                   <Button 
                     type="submit" 
                     className="w-full rounded-xl mt-4" 
-                    disabled={isSavingSetup || (isAdminRole && !adminMasterKey)}
+                    disabled={isSavingSetup}
                   >
                     {isSavingSetup ? "..." : t('setup.save_btn')}
                   </Button>
