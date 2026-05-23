@@ -285,7 +285,8 @@ export default function Dashboard() {
             const clientDocRef = doc(db, "clients", vRow.clientId)
             await setDoc(clientDocRef, {
               secretKey: newKey,
-              createdAt: new Date()
+              createdAt: new Date(),
+              ownerUid: user.uid
             })
             keysToShow.push({ clientId: vRow.clientId, secretKey: newKey })
           }
