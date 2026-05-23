@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, setDoc, getDoc } from 'firebase/firestore'
+import { collection, onSnapshot, query, orderBy, where, doc, updateDoc, deleteDoc, setDoc, getDoc } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase'
 import { signOut } from 'firebase/auth'
 import { useTranslation } from 'react-i18next'
@@ -88,7 +88,6 @@ export default function Dashboard() {
   const [isSavingSetup, setIsSavingSetup] = useState(false)
 
   // Security Verification states
-  const [adminMasterKey, setAdminMasterKey] = useState<string>('')
   const [setupError, setSetupError] = useState<string | null>(null)
   const [generatedKeys, setGeneratedKeys] = useState<{ clientId: string; secretKey: string }[] | null>(null)
   const [registeredClients, setRegisteredClients] = useState<{ [clientId: string]: { secretKey?: string, telegramChatId?: string } }>({})
@@ -202,18 +201,18 @@ export default function Dashboard() {
 
     try {
       if (isAdminRole) {
-        // Admin verification
-        const masterKeyCheck = adminMasterKey.trim()
-        if (masterKeyCheck !== 'admin-crm-pass') {
+        // Admin verification — check Firestore profile role set by backend/Firebase Admin
+        const userDocRef = doc(db, "users", user.uid)
+        const userSnap = await getDoc(userDocRef)
+        const profileData = userSnap.exists() ? userSnap.data() : null
+        if (!profileData || profileData.role !== 'admin') {
           setSetupError(t('setup.invalid_master'))
           setIsSavingSetup(false)
           return
         }
-        
-        const userDocRef = doc(db, "users", user.uid)
+        // Profile already has admin role — just ensure clientId is cleared
         await updateDoc(userDocRef, {
-          clientId: '',
-          role: 'admin'
+          clientId: ''
         })
       } else {
         // Client ID selection for multiple sites
@@ -315,7 +314,28 @@ export default function Dashboard() {
 
   // Firebase listener
   useEffect(() => {
-    const q = query(collection(db, "leads"), orderBy("createdAt", "desc"))
+    if (!userProfile) return; // Wait for userProfile to load
+
+    let q;
+    if (userProfile.role === 'admin') {
+      if (adminSiteFilter !== 'all') {
+        q = query(collection(db, "leads"), where("clientId", "==", adminSiteFilter), orderBy("createdAt", "desc"));
+      } else {
+        q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
+      }
+    } else {
+      const profileIds = userProfile.clientIds || (userProfile.clientId ? [userProfile.clientId] : []);
+      if (profileIds.length === 0) {
+        setLeads([]);
+        setLoading(false);
+        return; // No leads to fetch
+      }
+      
+      // Firestore 'in' query has a max of 10 items.
+      const safeIds = profileIds.slice(0, 10);
+      q = query(collection(db, "leads"), where("clientId", "in", safeIds), orderBy("createdAt", "desc"));
+    }
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedLeads = snapshot.docs.map(d => {
         const data = d.data()
@@ -346,7 +366,7 @@ export default function Dashboard() {
       setLoading(false)
     })
     return () => unsubscribe()
-  }, [i18n.language, notificationsEnabled, playNotificationSound, sendBrowserNotification, t])
+  }, [i18n.language, notificationsEnabled, playNotificationSound, sendBrowserNotification, t, userProfile, adminSiteFilter])
 
   // Reactively sync details panel lead
   const activeLead = useMemo(() => {
@@ -363,23 +383,8 @@ export default function Dashboard() {
     return Array.from(ids).sort()
   }, [leads])
 
-  // Filter leads based on tenant/client permissions (before applying search or status filter)
-  const clientLeads = useMemo(() => {
-    return leads.filter(lead => {
-      if (userProfile) {
-        if (userProfile.role === 'client') {
-          const profileIds = userProfile.clientIds || (userProfile.clientId ? [userProfile.clientId] : [])
-          if (profileIds.length > 0) {
-            return profileIds.includes(lead.clientId)
-          }
-          return false
-        } else if (userProfile.role === 'admin' && adminSiteFilter !== 'all') {
-          return lead.clientId === adminSiteFilter
-        }
-      }
-      return true
-    })
-  }, [leads, userProfile, adminSiteFilter])
+  // Since tenant isolation is now handled by Firestore queries, clientLeads is just leads
+  const clientLeads = leads
 
   // Filtered leads for display (applying status filter and search query)
   const filteredLeads = useMemo(() => {
@@ -418,15 +423,7 @@ export default function Dashboard() {
       .sort((a, b) => b.value - a.value);
   }, [filteredLeads]);
 
-  // Debug logging
-  console.log("DEBUG CRM STATUS:", {
-    userProfile,
-    leadsCount: leads.length,
-    uniqueClientIds,
-    adminSiteFilter,
-    clientLeadsCount: clientLeads.length,
-    filteredLeadsCount: filteredLeads.length
-  });
+
 
   const handleStatusChange = async (id: string, newStatus: Lead['status']) => {
     try {
@@ -722,17 +719,11 @@ export default function Dashboard() {
                   </div>
 
                   {isAdminRole ? (
-                    /* Admin Master Key Input */
+                    /* Admin role verification note — role must be set in Firestore by an authorized process */
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-foreground">{t('setup.master_key')}</label>
-                      <Input
-                        type="password"
-                        placeholder={t('setup.master_placeholder')}
-                        value={adminMasterKey}
-                        onChange={(e) => setAdminMasterKey(e.target.value)}
-                        className="rounded-xl"
-                        required
-                      />
+                      <p className="text-sm text-muted-foreground">
+                        {t('setup.admin_verify_note', { defaultValue: 'Your account will be verified against the database. Only pre-authorized admins can activate this role.' })}
+                      </p>
                     </div>
                   ) : (
                     /* Multiple Client IDs Setup */

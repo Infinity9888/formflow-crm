@@ -2,11 +2,21 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getFirestoreToken, runQuery, patchDocument } from './_firebase.js';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const MAKE_WEBHOOK = 'https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly';
+const TELEGRAM_WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
+// Fallback reference: https://hook.eu1.make.com/v86xzo9djri8nxhglbd71q9ebibsyhly
+const MAKE_WEBHOOK = process.env.MAKE_WEBHOOK_URL;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Validate Telegram webhook secret token (skip if env var not configured, for backward compatibility)
+  if (TELEGRAM_WEBHOOK_SECRET) {
+    const headerSecret = req.headers['x-telegram-bot-api-secret-token'];
+    if (headerSecret !== TELEGRAM_WEBHOOK_SECRET) {
+      return res.status(403).json({ error: 'Forbidden: invalid secret token' });
+    }
   }
 
   try {

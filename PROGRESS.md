@@ -22,6 +22,12 @@ Transitioning from local development to deployment preparation and finalizing ba
 - **Vercel Security Bypass:** Successfully bypassed a Vercel email security block during deployment.
 - **Project Naming:** Officially named the productized service **FormFlow**.
 - **Backend Architecture Pivot:** Switched from Firebase Cloud Functions to **Vercel Serverless Functions** (`api/` directory) for Telegram webhooks and notifications due to Firebase Spark plan limitations. 
+- **Security Hardening (Goal Completed):**
+  - Removed hardcoded master admin passwords from client bundles.
+  - Implemented strict Firestore Security Rules (tenant isolation).
+  - Enforced server-side `clientId` filtering and Firebase auth validation.
+  - Purged heavy `firebase-admin` dependency from frontend bundle.
+  - Added Make.com Webhook configurations to environment variables.
 
 ## Next Steps
 - [ ] Develop landing page template for the Cleaning/Dry Cleaning niche.
