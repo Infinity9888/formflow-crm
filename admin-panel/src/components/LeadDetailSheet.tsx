@@ -173,11 +173,11 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-l bg-background/95 backdrop-blur-md">
           {/* Header Customer Card */}
-          <div className="flex items-start gap-4 pb-6 mt-4 border-b">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-primary/60 text-xl font-bold text-white shadow-md">
+          <div className="flex items-center gap-4 pb-6 mt-2 border-b border-border/40">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary shadow-sm border border-primary/20">
               {initials}
             </div>
-            <div className="space-y-1 min-w-0 flex-1">
+            <div className="space-y-1.5 min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-lg font-semibold truncate max-w-[220px]">
                   {contacts.name || t("detail.title")}
@@ -202,11 +202,11 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
 
           {/* Quick Connect Actions */}
           {hasContacts && (
-            <div className="py-5 border-b space-y-2.5">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <div className="py-6 border-b border-border/40 space-y-3">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                 {t("detail.quick_connect")}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {contacts.phone && (
                   <>
                     <a
@@ -214,21 +214,21 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn(
-                        buttonVariants({ variant: "outline", size: "sm" }),
-                        "rounded-xl border hover:bg-green-500/10 hover:text-green-600 dark:hover:text-green-400 hover:border-green-500/30 transition-all duration-200"
+                        buttonVariants({ variant: "secondary", size: "sm" }),
+                        "rounded-full px-4 font-medium hover:bg-green-500 hover:text-white dark:hover:bg-green-500/20 dark:hover:text-green-400 transition-colors"
                       )}
                     >
-                      <MessageCircle className="mr-1.5 h-4 w-4 text-emerald-500" />
+                      <MessageCircle className="mr-2 h-4 w-4" />
                       WhatsApp
                     </a>
                     <a
                       href={`tel:${contacts.phone}`}
                       className={cn(
-                        buttonVariants({ variant: "outline", size: "sm" }),
-                        "rounded-xl border hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500/30 transition-all duration-200"
+                        buttonVariants({ variant: "secondary", size: "sm" }),
+                        "rounded-full px-4 font-medium hover:bg-blue-500 hover:text-white dark:hover:bg-blue-500/20 dark:hover:text-blue-400 transition-colors"
                       )}
                     >
-                      <Phone className="mr-1.5 h-4 w-4 text-blue-500" />
+                      <Phone className="mr-2 h-4 w-4" />
                       {contacts.phone}
                     </a>
                   </>
@@ -239,11 +239,11 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      buttonVariants({ variant: "outline", size: "sm" }),
-                      "rounded-xl border hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-500/30 transition-all duration-200"
+                      buttonVariants({ variant: "secondary", size: "sm" }),
+                      "rounded-full px-4 font-medium hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500/20 dark:hover:text-sky-400 transition-colors"
                     )}
                   >
-                    <Send className="mr-1.5 h-4 w-4 text-sky-500" />
+                    <Send className="mr-2 h-4 w-4" />
                     Telegram
                   </a>
                 )}
@@ -251,11 +251,11 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                   <a
                     href={`mailto:${contacts.email}`}
                     className={cn(
-                      buttonVariants({ variant: "outline", size: "sm" }),
-                      "rounded-xl border hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500/30 transition-all duration-200"
+                      buttonVariants({ variant: "secondary", size: "sm" }),
+                      "rounded-full px-4 font-medium hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500/20 dark:hover:text-amber-400 transition-colors"
                     )}
                   >
-                    <Mail className="mr-1.5 h-4 w-4 text-amber-500" />
+                    <Mail className="mr-2 h-4 w-4" />
                     Email
                   </a>
                 )}
@@ -265,11 +265,11 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      buttonVariants({ variant: "outline", size: "sm" }),
-                      "rounded-xl border hover:bg-pink-500/10 hover:text-pink-600 dark:hover:text-pink-400 hover:border-pink-500/30 transition-all duration-200"
+                      buttonVariants({ variant: "secondary", size: "sm" }),
+                      "rounded-full px-4 font-medium hover:bg-pink-500 hover:text-white dark:hover:bg-pink-500/20 dark:hover:text-pink-400 transition-colors"
                     )}
                   >
-                    <ExternalLink className="mr-1.5 h-4 w-4 text-pink-500" />
+                    <ExternalLink className="mr-2 h-4 w-4" />
                     Instagram
                   </a>
                 )}
@@ -277,9 +277,9 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
             </div>
           )}
 
-          {/* Status Actions (Sleek Pills Design) */}
-          <div className="py-5 border-b space-y-2.5">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          {/* Status Actions */}
+          <div className="py-6 border-b border-border/40 space-y-3">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
               {t("table.change_status")}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -289,16 +289,15 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
                 return (
                   <Button
                     key={key}
-                    variant={isActive ? "default" : "outline"}
+                    variant={isActive ? "default" : "secondary"}
                     size="sm"
-                    className={`rounded-full h-8 px-3 text-xs transition-all duration-200 ${
-                      isActive 
-                        ? `${config.activeBg} font-medium shadow-none border-0` 
-                        : `text-muted-foreground hover:bg-muted/80`
-                    }`}
+                    className={cn(
+                      "rounded-full px-4 font-medium transition-colors border-0",
+                      isActive ? config.activeBg : "hover:bg-muted/80 text-muted-foreground"
+                    )}
                     onClick={() => handleStatusChange(key as Lead["status"])}
                   >
-                    <Icon className={`mr-1.5 h-3.5 w-3.5 ${isActive ? "text-white" : config.color}`} />
+                    <Icon className={cn("mr-2 h-4 w-4", isActive ? "text-white" : config.color)} />
                     {config.label}
                   </Button>
                 )
@@ -307,32 +306,31 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
           </div>
 
           {/* Form Data Grid */}
-          <div className="py-5 border-b space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="py-6 border-b border-border/40 space-y-4">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
               {t("detail.form_data")}
             </p>
-            <div className="rounded-xl border bg-card/20 overflow-hidden divide-y divide-border/50">
+            <div className="space-y-4">
               {Object.entries(lead.formData).map(([key, value]) => (
-                <div
-                  key={key}
-                  className="group relative flex items-start justify-between p-3 transition-colors hover:bg-muted/30"
-                >
-                  <div className="space-y-0.5 min-w-0 flex-1 pr-8">
-                    <p className="text-xs font-medium text-muted-foreground">{key}</p>
-                    <p className="text-sm font-semibold break-words text-foreground">{value}</p>
+                <div key={key} className="group relative flex flex-col gap-1">
+                  <span className="text-xs font-medium text-muted-foreground/70">{key}</span>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-sm font-medium text-foreground leading-snug break-words">
+                      {value}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-md text-muted-foreground hover:text-foreground"
+                      onClick={() => copyToClipboard(String(value), key)}
+                    >
+                      {copiedField === key ? (
+                        <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
-                    onClick={() => copyToClipboard(String(value), key)}
-                  >
-                    {copiedField === key ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                  </Button>
                 </div>
               ))}
             </div>
