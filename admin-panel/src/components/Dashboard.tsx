@@ -319,7 +319,7 @@ export default function Dashboard() {
     let q;
     if (userProfile.role === 'admin') {
       if (adminSiteFilter !== 'all') {
-        q = query(collection(db, "leads"), where("clientId", "==", adminSiteFilter), orderBy("createdAt", "desc"));
+        q = query(collection(db, "leads"), where("clientId", "==", adminSiteFilter));
       } else {
         q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
       }
@@ -333,7 +333,7 @@ export default function Dashboard() {
       
       // Firestore 'in' query has a max of 10 items.
       const safeIds = profileIds.slice(0, 10);
-      q = query(collection(db, "leads"), where("clientId", "in", safeIds), orderBy("createdAt", "desc"));
+      q = query(collection(db, "leads"), where("clientId", "in", safeIds));
     }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -354,6 +354,13 @@ export default function Dashboard() {
         } as Lead
       })
 
+      // Sort client-side to avoid requiring composite indexes
+      fetchedLeads.sort((a, b) => {
+        const timeA = a.createdAtRaw ? a.createdAtRaw.getTime() : 0;
+        const timeB = b.createdAtRaw ? b.createdAtRaw.getTime() : 0;
+        return timeB - timeA; // Descending
+      });
+
       // Check if new lead appeared
       if (notificationsEnabled && prevLeadCountRef.current !== null && fetchedLeads.length > prevLeadCountRef.current) {
         playNotificationSound()
@@ -364,6 +371,9 @@ export default function Dashboard() {
 
       setLeads(fetchedLeads)
       setLoading(false)
+    }, (error) => {
+      console.error("Firestore onSnapshot error:", error);
+      setLoading(false);
     })
     return () => unsubscribe()
   }, [i18n.language, notificationsEnabled, playNotificationSound, sendBrowserNotification, t, userProfile, adminSiteFilter])
