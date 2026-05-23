@@ -20,7 +20,6 @@ import {
   Phone,
   Mail,
   Send,
-  User,
   Calendar,
   ExternalLink,
   MessageCircle,
