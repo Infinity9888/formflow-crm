@@ -7,14 +7,21 @@ service cloud.firestore {
     // Unauthenticated users CAN create leads (from landing pages)
     // Only authenticated users can read, update, delete leads
     match /leads/{leadId} {
-      allow create: if true;
+      allow create: if
+        request.resource.data.keys().hasAll(['clientId', 'status', 'formData']) &&
+        request.resource.data.clientId is string &&
+        request.resource.data.clientId.size() <= 64 &&
+        request.resource.data.status == 'new' &&
+        request.resource.data.formData.size() <= 25;
       allow read, update, delete: if request.auth != null;
     }
 
     // ===== CLIENTS COLLECTION =====
     // Only authenticated users can manage client records
     match /clients/{clientId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null &&
+        (request.auth.token.admin == true ||
+         request.auth.uid == resource.data.ownerUid);
     }
 
     // ===== USERS COLLECTION =====

@@ -28,6 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!form) return;
 
+  // Create status message element if not already in HTML
+  let statusMsg = document.getElementById('form-status');
+  if (!statusMsg) {
+    statusMsg = document.createElement('p');
+    statusMsg.id = 'form-status';
+    statusMsg.style.cssText = 'margin-top:12px;text-align:center;font-weight:500;';
+    form.insertAdjacentElement('afterend', statusMsg);
+  }
+
+  // Honeypot: inject hidden field — bots fill it, humans don't
+  const honeypot = document.createElement('input');
+  honeypot.type = 'text';
+  honeypot.name = '_honeypot';
+  honeypot.style.cssText = 'position:absolute;left:-9999px;opacity:0;';
+  honeypot.tabIndex = -1;
+  honeypot.autocomplete = 'off';
+  form.appendChild(honeypot);
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -39,6 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
+
+      // Reject bots that filled the honeypot
+      if (data['_honeypot']) return;
+      delete data['_honeypot'];
+
+      // Rate limit: max 3 submissions per hour per device
+      const RATE_KEY = 'ff_submit_times';
+      const now = Date.now();
+      const times = JSON.parse(localStorage.getItem(RATE_KEY) || '[]').filter(t => now - t < 3600000);
+      if (times.length >= 3) {
+        statusMsg.style.color = '#dc2626';
+        statusMsg.textContent = '❌ Забагато спроб. Спробуйте через годину.';
+        return;
+      }
+      localStorage.setItem(RATE_KEY, JSON.stringify([...times, now]));
 
       const urlParams = new URLSearchParams(window.location.search);
       const utm_source = urlParams.get('utm_source') || 'organic';
@@ -74,11 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(err => console.error("Notification error:", err));
 
       form.reset();
-      alert('Заявка успешно отправлена!');
+      statusMsg.style.color = '#16a34a';
+      statusMsg.textContent = '✅ Заявка успешно отправлена! Ми зв\'яжемось з вами найближчим часом.';
+      form.style.display = 'none';
       
     } catch (error) {
       console.error("Error adding document: ", error);
-      alert('Ошибка при отправке. Пожалуйста, попробуйте позже.');
+      statusMsg.style.color = '#dc2626';
+      statusMsg.textContent = '❌ Помилка. Спробуйте ще раз або зателефонуйте нам.';
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

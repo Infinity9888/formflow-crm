@@ -28,6 +28,15 @@ Transitioning from local development to deployment preparation and finalizing ba
   - Enforced server-side `clientId` filtering and Firebase auth validation.
   - Purged heavy `firebase-admin` dependency from frontend bundle.
   - Added Make.com Webhook configurations to environment variables.
+  - Fixed CORS wildcard on API routes (now explicitly allowed origins).
+  - Secured Telegram Webhook to strictly require secret validation.
+  - Removed exposed Make.com test webhooks.
+  - Hardened Firestore create rules against large or malformed payloads.
+  - Implemented honeypot and localStorage rate limiting on landing scripts.
+- **Product Polish:**
+  - Upgraded PWA support ("Add to Home Screen" enabled via vite-plugin-pwa).
+  - Prettified Telegram Notification message formatting (MarkdownV2 with clean outputs).
+  - Substituted blocking alerts with inline UI notifications on submission.
 
 ## Next Steps
 - [ ] Develop landing page template for the Cleaning/Dry Cleaning niche.

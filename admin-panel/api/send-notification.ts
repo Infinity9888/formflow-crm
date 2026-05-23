@@ -19,7 +19,17 @@ function getFieldValue(doc: any, fieldName: string): string | undefined {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const ALLOWED_ORIGINS = [
+    'https://formflow-crm.vercel.app',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
+  ];
+  const origin = req.headers.origin || '';
+  if (ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS[0]);
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
     'Access-Control-Allow-Headers',
@@ -80,14 +90,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // 3. Build message from lead fields
-    let messageText = `🚨 *Новая заявка!*\n\n`;
+    const escapeMarkdown = (text: string) => {
+      return String(text).replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+    };
+
+    let messageText = `🔔 *Нова заявка — FormFlow*\n\n`;
     const fields = leadDoc?.fields || {};
-    for (const [key, val] of Object.entries(fields)) {
-      if (key !== 'clientId' && key !== 'createdAt' && key !== 'status') {
-        const v = (val as any)?.stringValue || (val as any)?.integerValue || '';
-        messageText += `*${key}:* ${v}\n`;
-      }
+    
+    // In REST API, map fields are under mapValue.fields
+    const formDataFields = fields?.formData?.mapValue?.fields || {};
+    for (const [key, val] of Object.entries(formDataFields)) {
+      const v = (val as any)?.stringValue || (val as any)?.integerValue || '';
+      if (v) messageText += `*${escapeMarkdown(key)}:* ${escapeMarkdown(String(v))}\n`;
     }
+
+    const source = fields?.source?.stringValue;
+    if (source) messageText += `\n📍 *Джерело:* ${escapeMarkdown(source)}`;
+
+    const time = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' });
+    messageText += `\n🕐 ${escapeMarkdown(time)}`;
 
     // 4. Send Telegram message
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -97,7 +118,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body: JSON.stringify({
         chat_id: telegramChatId,
         text: messageText,
-        parse_mode: 'Markdown'
+        parse_mode: 'MarkdownV2'
       }),
     });
 
