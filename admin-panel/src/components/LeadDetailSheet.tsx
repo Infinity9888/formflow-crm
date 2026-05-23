@@ -171,9 +171,9 @@ export function LeadDetailSheet({ lead, open, onOpenChange, onDeleted }: LeadDet
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-l bg-background/95 backdrop-blur-md">
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-l bg-background/95 backdrop-blur-md p-6 sm:p-8">
           {/* Header Customer Card */}
-          <div className="flex items-center gap-4 pb-6 mt-2 border-b border-border/40">
+          <div className="flex items-center gap-4 pb-6 border-b border-border/40">
             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary shadow-sm border border-primary/20">
               {initials}
             </div>
